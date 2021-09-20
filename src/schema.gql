@@ -1,0 +1,337 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type PhotoRating {
+  id: ID!
+  rater: User!
+  raterId: Float!
+  photo: Photo!
+  photoId: Float!
+  value: Float!
+  createdDate: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Photo {
+  id: ID!
+  user: User!
+  userId: Float!
+  photoRatings: [PhotoRating!]!
+  createdDate: DateTime!
+  index: Float!
+  image: String!
+  modifiedDate: DateTime!
+}
+
+type Swipe {
+  id: ID!
+  swiper: User!
+  swiperId: Float!
+  shownUser: User!
+  shownUserId: Float!
+  createdDate: DateTime!
+  decision: SwipeEnum!
+}
+
+"""Liked or Disliked"""
+enum SwipeEnum {
+  LIKED
+  DISLIKED
+}
+
+type Match {
+  id: ID!
+  swipedLast: User!
+  swipedLastId: Float!
+  swipedFirst: User!
+  swipedFirstId: Float!
+  createdDate: DateTime!
+  unmatched: Boolean!
+  modifiedDate: DateTime
+}
+
+type Message {
+  id: ID!
+  sender: User!
+  senderId: Float!
+  receiver: User!
+  receiverId: Float!
+  createdDate: DateTime!
+  text: String
+  modifiedDate: DateTime
+  sentDate: DateTime!
+  readDate: DateTime
+  revokedDate: DateTime
+}
+
+type ReportUser {
+  id: ID!
+  reporter: User!
+  reporterId: Float!
+  accuser: User!
+  accusedId: Float!
+  createdDate: DateTime!
+  reason: ReportEnum!
+  comments: String
+}
+
+"""reasons for flagging and/or blocking user"""
+enum ReportEnum {
+  FAKE
+  SCAM
+  HATE
+  POLICY
+  INAPPROPRIATE
+  UNDERAGE
+  RECOGNIZE
+  NOT_INTERESTED
+  OTHER
+}
+
+type User {
+  id: ID!
+  firstname: String
+  lastname: String
+  name: String!
+  email: String!
+  gender: GenderEnum
+  lookingForGender: [GenderEnum!]
+  birthday: DateTime
+  age: Float
+  jobTitle: String
+  work: String
+  height: Float
+  minHeight: Float!
+  maxHeight: Float!
+  createdDate: DateTime!
+  modifiedDate: DateTime!
+  photos: [Photo!]!
+  photoRatings: [PhotoRating!]!
+  swipedBy: [Swipe!]!
+  swipes: [Swipe!]!
+  matchedOnSwipe: [Match!]!
+  matchedAfterSwipe: [Match!]!
+  sentMessages: [Message!]!
+  receivedMessages: [Message!]!
+  userReports: [ReportUser!]!
+  accusedByReports: [ReportUser!]!
+}
+
+"""gender selection"""
+enum GenderEnum {
+  FEMALE
+  MALE
+}
+
+type FileEntity {
+  id: ID!
+  url: String!
+}
+
+type PhotoRatingCriteria {
+  id: PhotoRatingCriteriaEnum!
+  name: Float!
+  description: String!
+}
+
+"""What to rate"""
+enum PhotoRatingCriteriaEnum {
+  SMART
+  TRUSTWORTHY
+  ATTRACTIVE
+}
+
+type Query {
+  user(id: Int!): User!
+  swipe(id: Int!): Swipe!
+  reportUser(id: Int!): ReportUser!
+  findReportsAgainstUser(id: Float!): [ReportUser!]!
+  findReportsByUser(id: Float!): [ReportUser!]!
+  photo(id: Int!): Photo!
+  photoRating(id: Int!): PhotoRating!
+  findRatingsForPhoto(id: Float!): [PhotoRating!]!
+  findPhotoRatingsByUser(id: Float!): [PhotoRating!]!
+  photoRatingCriteria: [PhotoRatingCriteria!]!
+  photoRatingCriterion(id: Int!): PhotoRatingCriteria!
+  fileEntity(id: Int!): FileEntity!
+  message(id: Int!): Message!
+  match(id: Int!): Match!
+}
+
+type Mutation {
+  createUser(data: CreateUserInput!): User!
+  updateUser(data: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
+  createSwipe(data: CreateSwipeInput!): Swipe!
+  updateSwipe(data: UpdateSwipeInput!): Swipe!
+  removeSwipe(id: Int!): Swipe!
+  createReportUser(data: CreateReportUserInput!): ReportUser!
+  updateReportUser(data: UpdateReportUserInput!): ReportUser!
+  removeReportUser(id: Int!): ReportUser!
+  createPhoto(createPhotoInput: CreatePhotoInput!): Photo!
+  removePhoto(id: Int!): Photo!
+  createPhotoRating(data: CreatePhotoRatingInput!): PhotoRating!
+  updatePhotoRating(updatePhotoRatingInput: UpdatePhotoRatingInput!): PhotoRating!
+  removePhotoRating(id: Int!): PhotoRating!
+  createPhotoRatingCriteria(data: CreatePhotoRatingCriteriaInput!): PhotoRatingCriteria!
+  updatePhotoRatingCriteria(data: UpdatePhotoRatingCriteriaInput!): PhotoRatingCriteria!
+  removePhotoRatingCriteria(id: Int!): PhotoRatingCriteria!
+  createFileEntity(data: CreateFileEntityInput!): FileEntity!
+  updateFileEntity(data: UpdateFileEntityInput!): FileEntity!
+  removeFileEntity(id: Int!): FileEntity!
+  createMessage(data: CreateMessageInput!): Message!
+  updateMessage(data: UpdateMessageInput!): Message!
+  removeMessage(id: Int!): Message!
+  createMatch(createMatchInput: CreateMatchInput!): Match!
+  updateMatch(updateMatchInput: UpdateMatchInput!): Match!
+  removeMatch(id: Int!): Match!
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
+  firstname: String
+  lastname: String
+  gender: GenderEnum
+  lookingForGender: [GenderEnum!]
+  birthday: DateTime
+  jobTitle: String
+  work: String
+  height: Float
+  minHeight: Float
+  maxHeight: Float
+}
+
+input UpdateUserInput {
+  id: Float!
+  email: String
+  firstname: String
+  lastname: String
+  gender: GenderEnum
+  lookingForGender: [GenderEnum!]
+  birthday: DateTime
+  jobTitle: String
+  work: String
+  height: Float
+  minHeight: Float
+  maxHeight: Float
+}
+
+input CreateSwipeInput {
+  """User Id of user swiping"""
+  swiperId: String!
+
+  """User Id of user being liked or disliked"""
+  shownUserId: String!
+  decision: SwipeEnum!
+}
+
+input UpdateSwipeInput {
+  id: Float!
+
+  """User Id of user swiping"""
+  swiperId: String!
+
+  """User Id of user being liked or disliked"""
+  shownUserId: String!
+  decision: SwipeEnum!
+}
+
+input CreateReportUserInput {
+  reporterId: Float!
+  accusedId: Float!
+  createdDate: DateTime!
+  reason: String!
+  comments: String!
+}
+
+input UpdateReportUserInput {
+  id: Float!
+  reporterId: Float!
+  accusedId: Float!
+  createdDate: DateTime!
+  reason: String!
+  comments: String!
+}
+
+input CreatePhotoInput {
+  userId: Float!
+  createdDate: DateTime!
+  index: Float!
+  image: String!
+  modifiedDate: DateTime!
+}
+
+input CreatePhotoRatingInput {
+  raterId: Float!
+  photoId: Float!
+  createdDate: DateTime!
+  value: Float!
+}
+
+input UpdatePhotoRatingInput {
+  raterId: Float!
+  photoId: Float!
+  createdDate: DateTime!
+  value: Float!
+  id: Float!
+}
+
+input CreatePhotoRatingCriteriaInput {
+  id: PhotoRatingCriteriaEnum!
+  name: Float!
+  description: String!
+}
+
+input UpdatePhotoRatingCriteriaInput {
+  id: PhotoRatingCriteriaEnum!
+  name: Float!
+  description: String!
+}
+
+input CreateFileEntityInput {
+  url: String!
+}
+
+input UpdateFileEntityInput {
+  url: String
+  id: Int!
+  name: String!
+}
+
+input CreateMessageInput {
+  senderId: Float!
+  receiverId: Float!
+  text: String!
+}
+
+input UpdateMessageInput {
+  senderId: Float!
+  receiverId: Float!
+  text: String!
+  id: Int!
+  modifiedDate: DateTime
+  sentDate: DateTime!
+  readDate: DateTime
+  revokedDate: DateTime
+}
+
+input CreateMatchInput {
+  swipedLastId: Float!
+  swipedFirstId: Float!
+  unmatched: Boolean!
+  modifiedDate: DateTime
+}
+
+input UpdateMatchInput {
+  swipedLastId: Float!
+  swipedFirstId: Float!
+  unmatched: Boolean!
+  modifiedDate: DateTime
+  id: Int!
+}
